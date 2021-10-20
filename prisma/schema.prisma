@@ -9,3 +9,23 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Item {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  location   Location? @relation(fields: [locationId], references: [id])
+  locationId Int       @map("location_id")
+
+  @@map("item")
+}
+
+model Location {
+  id  Int     @id @default(autoincrement())
+  lat Decimal @db.Decimal(11, 8)
+  lon Decimal @db.Decimal(11, 8)
+
+  @@unique([lat, lon])
+  @@map("location")
+  Item Item[]
+}
